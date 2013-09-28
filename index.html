@@ -1,0 +1,66 @@
+<!doctype html>
+<html ng-app>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="unicode.js"></script>
+  <script src="main.js"></script>
+</head>
+<body>
+  <div ng-controller="UnicodeCtrl">
+    <h1>What is Unicode?</h1>
+    <p>Unicode is a standard that assigns every character in the world a specific numeric id. For example, the letters A through Z, uppercase are given the ids 65 to 88.</p>
+    <p>Enter a number</p>
+    <input type="text" ng-model="decimal">
+    <p>Character: {{decimalToChar(decimal)}}</p>
+    <p>Unicode code points are represented in base 16 (hexadecimal).</p>
+    <p>Enter a hexadecimal number</p>
+    <input type="text" ng-model="hex">
+    <p>Character: {{hexToChar(hex)}}</p>
+
+    <h1>Encoding</h1>
+    <p>Computers read documents in binary, so Unicode code points need to be represented in binary. There are three main encodings that describe how a computer should read and write Unicode code points to and from binary.</p>
+
+    <h1>UTF-8</h1>
+    <p>Each code point should be represented by 1 to 4 octets (1 to 4 chunks of 8 bits).</p>
+    <p>UTF-8 is a variable-width encoding because code point is expressed with a varying numbers of bits (8, 16, 24, or 32 bits in this case.)
+    <p>Enter a character</p>
+    <input type="text" ng-model="utf8">
+    <p>Code point: {{toCodePoint(utf8)}}</p>
+    <p>Binary: {{toBinary(utf8)}}</p>
+    <p>Padded binary: {{toUTF8Binary(utf8)}}</p>
+
+    <h1>UTF-16</h1>
+    <p>Each code point is represented by 1 to 2 16-bit code units.</p>
+    <p>UTF-8 is also a variable-width encoding</p>
+    <p>Enter a character</p>
+    <input type="text" ng-model="utf16">
+    <p>Code point:</p>
+    <p>Binary:</p>
+    <p>Padded binary:</p>
+
+    <h1>UTF-32</h1>
+    <p>Each code point is represented by one 32-bit code unit. It is a directy translation of code point hexadecimal numbers into binary.</p>
+    <input type="text" ng-model="utf32">
+    <p>Code point:</p>
+    <p>Binary:</p>
+    <p>Padded binary:</p>
+
+    <h1>Terms</h1>
+    <ul>
+      <li>Bit: A single binary digit (0 or 1)</li>
+    </ul>
+
+    <h1>Helpful resources</h1>
+    <ul>
+      <li>Wikipedia</li>
+      <ul>
+        <li><a href="http://en.wikipedia.org/wiki/Unicode">Unicode</a></li>
+        <li><a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a></li>
+        <li><a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a></li>
+        <li><a href="http://en.wikipedia.org/wiki/UTF-32">UTF-32</a></li>
+      </ul>
+    </ul>
+  </div>
+</body>
+</html>
