@@ -8,7 +8,7 @@
 <body>
     <div class="container" style="margin-bottom: 60px;">
       <div ng-controller="UnicodeCtrl">
-        <h1>What is Unicode? <small>by Kevin Vu</small></h1>
+        <h1>What is Unicode? <small>by Kevin Vu, <a href="https://github.com/kvu787/unicool">GitHub</a></small></h1>
         <p>Unicode is a standard that assigns every character in the world a specific numeric id. For example, the letters A through Z, uppercase are given the ids 65 to 88.</p>
         <div class="well">
           <p>Enter a (base 10) number:</p>
@@ -121,7 +121,6 @@
           </ul>
         </ul>
 
-<br />
         <hr />
         <h1>A peek at the backend...</h1>
         <br />
@@ -131,7 +130,7 @@ var datatypesEnum = {
     BIN : 0, 
     INT : 1,
     HEX : 2,
-    UTF8 : 3, 
+    UTF8 : 3
 };
 
 // Converts 'val' with type 'fromType' to type 'toType'.

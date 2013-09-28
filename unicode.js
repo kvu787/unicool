@@ -7,7 +7,7 @@ var datatypesEnum = {
     BIN : 0, 
     INT : 1,
     HEX : 2,
-    UTF8 : 3, 
+    UTF8 : 3
     // UTF16 : 4, 
     // UTF32 : 5
 };
