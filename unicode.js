@@ -1,6 +1,9 @@
-// depends on jquery
+// Unicode.js provides functions to convert to and from various bases and encoding commonly used in Unicode.
+// Only unicodeConvert and datatypesEnum should be publicly used.
+// Depends on jQuery.
 
-var datatypeEnum = {
+// Provides integer constant to indicate the type of an input.
+var datatypesEnum = {
     BIN : 0, 
     INT : 1,
     HEX : 2,
@@ -9,6 +12,8 @@ var datatypeEnum = {
     // UTF32 : 5
 };
 
+// Converts 'val' with type 'fromType' to type 'toType'.
+// fromType and toType are values from datatypesEnum.
 var unicodeConvert = function (val, fromType, toType) {
     return fromBin(toBin(val, fromType), toType);
 }; 
@@ -27,32 +32,32 @@ var toBin = function (val, type) {
     var digits = '0123456789';
     var letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     switch (type) {
-        case datatypeEnum.BIN:
+        case datatypesEnum.BIN:
             if (!validateCharacters(val, '01')) {
                 return -1;
             }
             return val;
-        case datatypeEnum.INT:
+        case datatypesEnum.INT:
             if (!validateCharacters(val, digits)) {
                 return -1;
             }
             return parseInt((val).toString(), 10).toString(2);
-        case datatypeEnum.HEX:
+        case datatypesEnum.HEX:
             if (!validateCharacters(val, digits + letters)) {
                 return -1;
             }
             return parseInt((val).toString(), 16).toString(2);
-        case datatypeEnum.UTF8:
+        case datatypesEnum.UTF8:
             if (!validateCharacters(val, '01')) {
                 return -1;
             }
             return utf8ToBin(val);
-        // case datatypeEnum.UTF16:
+        // case datatypesEnum.UTF16:
         //     // not implemented
         //     if (!validateCharacters(val, '01')) {
         //         return -1;
         //     }
-        // case datatypeEnum.UTF32:
+        // case datatypesEnum.UTF32:
         //     // not implemented
         //     if (!validateCharacters(val, '01')) {
         //         return -1;
@@ -74,20 +79,22 @@ var fromBin = function(val, type) {
     if (!validateCharacters(val, '01')) {
         return -1;
     }
-    val = parseInt(val, 2)
     switch (type) {
-        case datatypeEnum.BIN:
+        case datatypesEnum.BIN:
+            val = parseInt(val, 2);
             return val.toString(2);
-        case datatypeEnum.INT:
+        case datatypesEnum.INT:
+            val = parseInt(val, 2);
             return val.toString(10);
-        case datatypeEnum.HEX:
+        case datatypesEnum.HEX:
+            val = parseInt(val, 2);
             return val.toString(16);
-        case datatypeEnum.UTF8:
+        case datatypesEnum.UTF8:
             return binToUtf8(val);
-        // case datatypeEnum.UTF16:
+        // case datatypesEnum.UTF16:
         //     // not implemented
         //     break;
-        // case datatypeEnum.UTF32:
+        // case datatypesEnum.UTF32:
         //     // not implemented
         //     break;
         default:
@@ -152,21 +159,41 @@ var utf8ToUnicode = function (val) {
 };
 
 // Converts a valid binary string to UTF-8 binary.
-var binToUtf8 = function (val) {
-    var padding;
+var binToUtf8Bytes = function (val) {
     if (val.length > 16) {
         padding = 21 - val.length;
-        return '11110' + '0'.repeat(padding) + val.substr(0, 3 - padding) + '10' + val.substr(3 - padding, 6) + '10' + val.substr(9 - padding, 6) + '10' + val.substr(15 - padding);
+        return [val.substr(0, 3 - padding), val.substr(3 - padding, 6), val.substr(9 - padding, 6), val.substr(15 - padding)];
     } 
     if (val.length > 11) {
         padding = 16 - val.length;
-        return '1110' + '0'.repeat(padding) + val.substr(0, 4 - padding) + '10' + val.substr(4 - padding, 6) + '10' + val.substr(10 - padding);
+        return [val.substr(0, 4 - padding), val.substr(4 - padding, 6), val.substr(10 - padding)];
     }
     if (val.length > 7) {
         padding = 11 - val.length;
-        return '110' + '0'.repeat(padding) + val.substr(0, 5 - padding) + '10' + val.substr(5 - padding, 6);
+        return [val.substr(0, 5 - padding), val.substr(5 - padding, 6)];
     }
-    return '0' + val;
+    return [val];
+};
+
+var binToUtf8BytesPadded = function (val) {
+    var padding;
+    if (val.length > 3) {
+        padding = 21 - val.join('').length;
+        return ['11110' + '0'.repeat(padding) + val[0], '10' + val[1], '10' + val[2], '10' + val[3]];
+    } 
+    if (val.length > 2) {
+        padding = 16 - val.join('').length;
+        return ['1110' + '0'.repeat(padding) + val[0], '10' + val[1], '10' + val[2]];
+    }
+    if (val.length > 1) {
+        padding = 11 - val.join('').length;
+        return ['110' + '0'.repeat(padding) + val[0], '10' + val[1]];
+    }
+    return ['0' + val[0]];
+};
+
+var binToUtf8 = function (val) {
+    return binToUtf8BytesPadded(binToUtf8Bytes(val)).join('');
 };
 
 var utf16ToBin = function (val) {
@@ -193,4 +220,10 @@ var validateCharacters = function (val, valid) {
         }
     }
     return true;
+};
+
+// http://stackoverflow.com/a/202627/1559886
+String.prototype.repeat = function( num )
+{
+    return new Array( num + 1 ).join( this );
 };

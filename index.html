@@ -1,66 +1,153 @@
 <!doctype html>
 <html ng-app>
 <head>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="unicode.js"></script>
-  <script src="main.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
 </head>
 <body>
-  <div ng-controller="UnicodeCtrl">
-    <h1>What is Unicode?</h1>
-    <p>Unicode is a standard that assigns every character in the world a specific numeric id. For example, the letters A through Z, uppercase are given the ids 65 to 88.</p>
-    <p>Enter a number</p>
-    <input type="text" ng-model="decimal">
-    <p>Character: {{decimalToChar(decimal)}}</p>
-    <p>Unicode code points are represented in base 16 (hexadecimal).</p>
-    <p>Enter a hexadecimal number</p>
-    <input type="text" ng-model="hex">
-    <p>Character: {{hexToChar(hex)}}</p>
+    <div class="container" style="margin-bottom: 60px;">
+      <div ng-controller="UnicodeCtrl">
+        <h1>What is Unicode? <small>by Kevin Vu</small></h1>
+        <p>Unicode is a standard that assigns every character in the world a specific numeric id. For example, the letters A through Z, uppercase are given the ids 65 to 88.</p>
+        <div class="well">
+          <p>Enter a (base 10) number:</p>
+          <p><input type="text" ng-model="decimal"></p>
+          <p>Character: <span style="font-size:15px;" class="label label-primary">{{printUnicode(convert(decimal.toString(), datatypes.INT, datatypes.INT))}}</span></p>
+        </div>
+        <div class="well">
+          <p>Unicode code points are represented in base 16 (hexadecimal).</p>
+          <p>Enter a hexadecimal number:</p>
+          <p><input type="text" ng-model="hex"></p>
+          <p>Character: <span style="font-size:15px;" class="label label-primary">{{printUnicode(convert(hex.toString(), datatypes.HEX, datatypes.INT))}}</span></p>
+        </div>
+        <br />
+        <h1>How does my computer read/write Unicode?</h1>
+        <p>Computers read and write documents in binary, so Unicode code points need to be represented in binary. There are three main encodings that describe how a computer should read and write Unicode code points to and from binary.</p>
+        <br />
+        <h1>UTF-8</h1>
+        <p>Each code point should be represented by 1 to 4 octets (1 to 4 chunks of 8 bits, hence the '8' in UTF-8).</p>
+        <p>UTF-8 is a variable-width encoding because code point is expressed with a varying numbers of bits (8, 16, 24, or 32 bits in this case.)
+        
+        <div class="well">
+            <p>Let's see how the computer writes a character to binary using UTF-8 encoding. Enter a character:</p>
+            <p><input type="text" ng-model="utf8"></p>
+            <p>Or, pick a character a below</p>
 
-    <h1>Encoding</h1>
-    <p>Computers read documents in binary, so Unicode code points need to be represented in binary. There are three main encodings that describe how a computer should read and write Unicode code points to and from binary.</p>
+            <button ng-click="utf8 = 'a'">a</button>
+            <button ng-click="utf8 = 'π'">π</button>
+            <button ng-click="utf8 = '世'">世</button>
+            <button ng-click="utf8 = '𤭢'">𤭢</button>
+        </div>
 
-    <h1>UTF-8</h1>
-    <p>Each code point should be represented by 1 to 4 octets (1 to 4 chunks of 8 bits).</p>
-    <p>UTF-8 is a variable-width encoding because code point is expressed with a varying numbers of bits (8, 16, 24, or 32 bits in this case.)
-    <p>Enter a character</p>
-    <input type="text" ng-model="utf8">
-    <p>Code point: {{toCodePoint(utf8)}}</p>
-    <p>Binary: {{toBinary(utf8)}}</p>
-    <p>Padded binary: {{toUTF8Binary(utf8)}}</p>
+        <!-- to code point -->
+        <div class="panel panel-default">
+          <div class="panel-heading">Translate to base 10 Unicode code point.</div>
+          <div class="panel-body">
+            <p>Code point: <span style="font-size:15px;" class="label label-primary">{{toUnicodeCodePoint(utf8)}}</span></p>
+            <p>The character is translated to its base 10 Unicode code point.</p>
+          </div>
+        </div>
 
-    <h1>UTF-16</h1>
-    <p>Each code point is represented by 1 to 2 16-bit code units.</p>
-    <p>UTF-8 is also a variable-width encoding</p>
-    <p>Enter a character</p>
-    <input type="text" ng-model="utf16">
-    <p>Code point:</p>
-    <p>Binary:</p>
-    <p>Padded binary:</p>
+        <!-- to raw binary -->
+        <div class="panel panel-default">
+          <div class="panel-heading">Convert to binary.</div>
+          <div class="panel-body">
+            <p>Raw binary: <span style="font-size:15px;" class="label label-primary">{{convert(toUnicodeCodePoint(utf8), datatypes.INT, datatypes.BIN)}}</span></p>
+            <p>Then the code point is converted to binary.</p>
+          </div>
+        </div>
 
-    <h1>UTF-32</h1>
-    <p>Each code point is represented by one 32-bit code unit. It is a directy translation of code point hexadecimal numbers into binary.</p>
-    <input type="text" ng-model="utf32">
-    <p>Code point:</p>
-    <p>Binary:</p>
-    <p>Padded binary:</p>
+        <!-- to raw utf-8 binary -->
+        <div class="panel panel-default">
+          <div class="panel-heading">Convert to UTF-8 binary.</div>
+          <div class="panel-body">
+            <p>This is the really cool part of UTF-8. To convert a bitstream into a set of Unicode points, the computer needs to 1) know how many bits is each character and 2) decide to ignore some of the bits.</p>
+            <p>UTF-8 uses the following bitstream signature to identify Unicode points: </p>
+            <ul>
+                <li>1-byte code points: 0xxxxxxx</li>
+                <li>2-byte code points: 011xxxxx 01xxxxxx</li>
+                <li>3-byte code points: 0111xxxx 01xxxxxx 01xxxxxx</li>
+                <li>4-byte code points: 01111xxx 01xxxxxx 01xxxxxx 01xxxxxx</li>
+            </ul>
 
-    <h1>Terms</h1>
-    <ul>
-      <li>Bit: A single binary digit (0 or 1)</li>
-    </ul>
+            <div class="panel panel-default">
+              <div class="panel-heading">Split raw binary into units.</div>
+              <div class="panel-body">
+                  <span ng-repeat="unit in utf8Bytes(convert(toUnicodeCodePoint(utf8), datatypes.INT, datatypes.BIN))"><span style="font-size:15px;" class="label label-info" >{{unit}}</span> </span>
+              </div>
+            </div>           
 
-    <h1>Helpful resources</h1>
-    <ul>
-      <li>Wikipedia</li>
-      <ul>
-        <li><a href="http://en.wikipedia.org/wiki/Unicode">Unicode</a></li>
-        <li><a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a></li>
-        <li><a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a></li>
-        <li><a href="http://en.wikipedia.org/wiki/UTF-32">UTF-32</a></li>
-      </ul>
-    </ul>
-  </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">Add padding to units to create bytes.</div>
+              <div class="panel-body">
+                <span ng-repeat="unit in utf8BytesPadded(utf8Bytes(convert(toUnicodeCodePoint(utf8), datatypes.INT, datatypes.BIN)))">
+                  <span style="font-size:15px;" class="label label-warning" >{{unit}}</span>
+                </span>
+              </div>
+            </div>  
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Recombine bytes.</div>
+              <div class="panel-body">
+                <p>Final UTF-8 binary: <span style="font-size:15px;" class="label label-success">{{convert(toUnicodeCodePoint(utf8), datatypes.INT, datatypes.UTF8)}}</span></p>
+                <p>Finally, the binary number is converted to UTF-8 binary and the computer writes these bits.</p>
+              </div>
+            </div>  
+
+          </div>
+        </div>
+<br />
+        <h1>UTF-16</h1>
+        <p>Each code point is represented by 1 to 2 16-bit code units.</p>
+        <p>UTF-16 is also a variable-width encoding.</p>
+<br />
+        <h1>UTF-32</h1>
+        <p>Each code point is represented by one 32-bit code unit. It is a direct translation of code point hexadecimal numbers into binary.</p>
+
+<!--         <h1>Terms</h1>
+        <ul>
+          <li>Bit: A single binary digit (0 or 1).</li>
+        </ul> -->
+<br />
+        <h1>Helpful resources</h1>
+        <ul>
+          <li>Wikipedia</li>
+          <ul>
+            <li><a href="http://en.wikipedia.org/wiki/Unicode">Unicode</a></li>
+            <li><a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a></li>
+            <li><a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a></li>
+            <li><a href="http://en.wikipedia.org/wiki/UTF-32">UTF-32</a></li>
+          </ul>
+        </ul>
+
+<br />
+        <hr />
+        <h1>A peek at the backend...</h1>
+        <br />
+        <p><pre>
+// Provides integer constant to indicate the type of an input.
+var datatypesEnum = {
+    BIN : 0, 
+    INT : 1,
+    HEX : 2,
+    UTF8 : 3, 
+};
+
+// Converts 'val' with type 'fromType' to type 'toType'.
+// fromType and toType are values from datatypesEnum.
+var unicodeConvert = function (val, fromType, toType) {
+    return fromBin(toBin(val, fromType), toType);
+}; 
+
+unicodeConvert('20ac', datatypesEnum.HEX, datatypesEnum.INT) === 8364;
+        </pre></p>
+      </div>
+    </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="unicode.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

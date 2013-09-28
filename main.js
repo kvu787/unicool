@@ -1,9 +1,22 @@
-// http://stackoverflow.com/a/202627/1559886
-String.prototype.repeat = function( num )
-{
-    return new Array( num + 1 ).join( this );
-};
-
 function UnicodeCtrl($scope) {
-    $scope.number = "";
+    $scope.decimal = '65';
+    $scope.hex = '20ac';
+    $scope.utf8 = '\u20ac';
+
+    $scope.printUnicode = function (val) {
+        if (val < 0) {
+            return 'cannot parse';
+        }
+        return String.fromCharCode(val);  
+    };
+    $scope.toUnicodeCodePoint = function (val) {
+        if (val === '') {
+            return 'cannot parse';
+        }
+        return val.charCodeAt(0).toString();  
+    };
+    $scope.convert = unicodeConvert;
+    $scope.datatypes = datatypesEnum;
+    $scope.utf8Bytes = binToUtf8Bytes;
+    $scope.utf8BytesPadded = binToUtf8BytesPadded;
 }
