@@ -1,7 +1,7 @@
 function UnicodeCtrl($scope) {
     $scope.decimal = '65';
     $scope.hex = '20ac';
-    $scope.utf8 = '\u20ac';
+    $scope.utf8 = '\u0041';
 
     $scope.printUnicode = function (val) {
         if (val < 0) {

@@ -11,12 +11,12 @@
         <h1>What is Unicode? <small>by Kevin Vu, <a href="https://github.com/kvu787/unicool">GitHub</a></small></h1>
         <p>Unicode is a standard that assigns every character in the world a specific numeric id. For example, the letters A through Z, uppercase are given the ids 65 to 88.</p>
         <div class="well">
-          <p>Enter a (base 10) number:</p>
+          <p>Unicode code points are represented by integers. Enter a (base 10) number:</p>
           <p><input type="text" ng-model="decimal"></p>
           <p>Character: <span style="font-size:15px;" class="label label-primary">{{printUnicode(convert(decimal.toString(), datatypes.INT, datatypes.INT))}}</span></p>
         </div>
         <div class="well">
-          <p>Unicode code points are represented in base 16 (hexadecimal).</p>
+          <p>Unicode code points are more commonly represented in base 16 (hexadecimal).</p>
           <p>Enter a hexadecimal number:</p>
           <p><input type="text" ng-model="hex"></p>
           <p>Character: <span style="font-size:15px;" class="label label-primary">{{printUnicode(convert(hex.toString(), datatypes.HEX, datatypes.INT))}}</span></p>
@@ -32,9 +32,9 @@
         <div class="well">
             <p>Let's see how the computer writes a character to binary using UTF-8 encoding. Enter a character:</p>
             <p><input type="text" ng-model="utf8"></p>
-            <p>Or, pick a character a below</p>
+            <p>Or, pick a more exotic character a below:</p>
 
-            <button ng-click="utf8 = 'a'">a</button>
+            <button ng-click="utf8 = '€'">€</button>
             <button ng-click="utf8 = 'π'">π</button>
             <button ng-click="utf8 = '世'">世</button>
             <button ng-click="utf8 = '𤭢'">𤭢</button>
@@ -62,7 +62,7 @@
         <div class="panel panel-default">
           <div class="panel-heading">Convert to UTF-8 binary.</div>
           <div class="panel-body">
-            <p>This is the really cool part of UTF-8. To convert a bitstream into a set of Unicode points, the computer needs to 1) know how many bits is each character and 2) decide to ignore some of the bits.</p>
+            <p>This is the really cool (UNIcool!) part of UTF-8. To convert a bitstream into a set of Unicode points, the computer needs to 1) know how many bits is each character and 2) decide to ignore some of the bits.</p>
             <p>UTF-8 uses the following bitstream signature to identify Unicode points: </p>
             <ul>
                 <li>1-byte code points: 0xxxxxxx</li>
