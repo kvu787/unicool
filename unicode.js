@@ -113,48 +113,32 @@ var utf8ToBin = function (val) {
     return res.join('');
 };
 
-// Splits a UTF-8 binary string into an array of binary strings code points, 
+// Splits a UTF-8 binary string into an array of binary string code points, 
 // still with padding.
 var tokenizeUtf8 = function (val) {
     var res = [];
-    while (val.length !== '') {        
-        if (val.lastIndexOf('0', '11110') === 0) {
-            res.push(val.substr(0, 32));
-            val = val.substr(32);
-            continue;
-        }
-        if (val.lastIndexOf('0', '1110') === 0) {
-            res.push(val.substr(0, 24));
-            val = val.substr(24);
-            continue;
-        }
-        if (val.lastIndexOf('0', '110') === 0) {
-            res.push(val.substr(0, 16));
-            val = val.substr(16);
-            continue;
-        }
-        if (val.lastIndexOf('0', '0') === 0) {
-            res.push(val.substr(0, 8));
-            val = val.substr(8);
-            continue;
-        }
+    for (var i = 0; i < val.length / 8; i++) {
+        res.push(val.substr(i*8, 8));
     }
     return res;
 };
 
 // Converts a single valid UTF-8 binary code point to a Unicode binary code point.
 var utf8ToUnicode = function (val) {
-    if (val.lastIndexOf('0', '11110') === 0) {
-        return val.slice.substr(4, 4) + val.slice.substr(10, 6) + val.slice.substr(18, 6) + val.slice.substr(26, 6); 
+    if (val.indexOf('11110') === 0) {
+        return val.substr(5, 3) + val.substr(10, 6) + val.substr(18, 6) + val.substr(26, 6); 
     }
-    if (val.lastIndexOf('0', '1110') === 0) {
-        return val.slice.substr(3, 5) + val.slice.substr(10, 6) + val.slice.substr(18, 6);
+    if (val.indexOf('1110') === 0) {
+        return val.substr(4, 4) + val.substr(10, 6) + val.substr(18, 6);
     }
-    if (val.lastIndexOf('0', '110') === 0) {
-        return val.slice.substr(2, 6) + val.slice.substr(10, 6);
+    if (val.indexOf('110') === 0) {
+        return val.substr(3, 5) + val.substr(10, 6);
     }
-    if (val.lastIndexOf('0', '0') === 0) {
-        return val.slice.substr(1, 7);
+    if (val.indexOf('10') === 0) {
+        return val.substr(2, 6);
+    }
+    if (val.indexOf('0') === 0) {
+        return val.substr(1, 7);
     }
 };
 

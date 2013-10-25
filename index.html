@@ -120,27 +120,6 @@
             <li><a href="http://en.wikipedia.org/wiki/UTF-32">UTF-32</a></li>
           </ul>
         </ul>
-
-        <hr />
-        <h1>A peek at the backend...</h1>
-        <br />
-        <p><pre>
-// Provides integer constant to indicate the type of an input.
-var datatypesEnum = {
-    BIN : 0, 
-    INT : 1,
-    HEX : 2,
-    UTF8 : 3
-};
-
-// Converts 'val' with type 'fromType' to type 'toType'.
-// fromType and toType are values from datatypesEnum.
-var unicodeConvert = function (val, fromType, toType) {
-    return fromBin(toBin(val, fromType), toType);
-}; 
-
-unicodeConvert('20ac', datatypesEnum.HEX, datatypesEnum.INT) === 8364;
-        </pre></p>
       </div>
     </div>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
